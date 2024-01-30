@@ -125,7 +125,7 @@ function Profile() {
         dispatch(signoutUserFailure(responseData.message));
         return;
       }
-      dispatch(signoutUserSuccess(responseData))
+      dispatch(signoutUserSuccess(responseData));
     } catch (error) {
       dispatch(signoutUserFailure(error.message));
     }
