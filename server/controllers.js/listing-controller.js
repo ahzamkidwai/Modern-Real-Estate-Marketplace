@@ -6,7 +6,7 @@ export const createListing = async (req, res, next) => {
     return res.status(200).json({
       success: true,
       message: "Listing Created Successfully.",
-      listing
+      listing,
     });
   } catch (error) {
     next(error);
