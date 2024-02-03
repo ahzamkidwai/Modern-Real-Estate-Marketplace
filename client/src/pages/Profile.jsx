@@ -35,6 +35,13 @@ function Profile() {
   console.log("File is inside (Profile.jsx) : ", file);
   console.log("File Percentage uploaded is : ", filePercentage);
   console.log("FormData is (inside Profile.jsx) : ", formData);
+  console.log("currentUser is (inside Profile.jsx) : ", currentUser);
+
+  useEffect(() => {
+    if (file) {
+      uploadFileHandler(file);
+    }
+  }, [file]);
 
   function uploadFileHandler(file) {
     const storage = getStorage(app);
@@ -62,12 +69,6 @@ function Profile() {
       }
     );
   }
-
-  useEffect(() => {
-    if (file) {
-      uploadFileHandler(file);
-    }
-  }, [file]);
 
   function changeHandler(event) {
     setFormData({ ...formData, [event.target.name]: event.target.value });

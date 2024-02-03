@@ -42,7 +42,9 @@ export const signin = async (req, res, next) => {
       return next(errorHandler(401, "Wrong Credentials"));
     }
 
-    const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET_KEY);
+    const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET_KEY, {
+      expiresIn: "1m",
+    });
     const { password: pass, ...rest } = validUser._doc;
 
     res.cookie("access_token", token, { httpOnly: true }).json({
@@ -84,7 +86,8 @@ export const google = async (req, res, next) => {
         {
           id: newUser._id,
         },
-        process.env.JWT_SECRET_KEY
+        process.env.JWT_SECRET_KEY,
+        { expiresIn: "1m" }
       );
       const { password: pass, ...rest } = newUser._doc;
       res.cookie("access_token", token, { httpOnly: true }).status(200).json({
@@ -99,14 +102,12 @@ export const google = async (req, res, next) => {
 export const signout = async (req, res, next) => {
   try {
     res.clearCookie("access_token");
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: "User has been logged out successfully.",
-      });
+    res.status(200).json({
+      success: true,
+      message: "User has been logged out successfully.",
+    });
   } catch (error) {
-    next(error)
+    next(error);
   }
 };
 
