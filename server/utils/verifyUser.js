@@ -19,6 +19,7 @@ export const verifyToken = (req, res, next) => {
 
   jwt.verify(token, process.env.JWT_SECRET_KEY, (error, user) => {
     if (error) {
+      console.log("verifyUser chal raha hain verifyUser.js");
       return next(errorHandler(403, "Forbidden"));
     }
     req.user = user;

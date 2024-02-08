@@ -8,6 +8,7 @@ import {
 import { app } from "../firebase";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { set } from "mongoose";
 
 function CreateListing() {
   const { currentUser } = useSelector((state) => state.user);
@@ -148,34 +149,41 @@ function CreateListing() {
 
   async function submitHandler(event) {
     event.preventDefault();
+    // console.log("submitHandler function is called");
     try {
+      console.log("We are inside submitHandler function try block");
       if (formData.imageUrls.length < 1)
         return setError("You must upload atleast one image");
       if (+formData.regularPrice < +formData.discountPrice)
         return setError("Discount Price must be lesser than Regular Price");
       setLoading(true);
       setError(false);
-      const response = await fetch("/api/listings/create", {
+      const response = await fetch("/api/listing/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
           ...formData,
-          userRef: currentUser._id,
+          userRef: currentUser.rest._id,
         }),
       });
+      // console.log("Current User hain : ", currentUser.rest);
+      console.log("Response is : ", response);
       const responseData = await response.json();
-      console.log(
-        "ResponseData inside (createListing.jsx) is : ",
-        responseData
-      );
       setLoading(false);
+      /* console.log(
+        "ResponseData inside (createListing.jsx for submitHandler) is : ",
+        responseData
+      ); */
       if (responseData.success === false) {
+        // console.log("responseData.success === false hain");
+        // setError("responseData.success === false hain " + responseData.message);
         setError(responseData.message);
       }
-      navigate(`/listing/${responseData._id}`)
+      navigate(`/listing/${currentUser.rest._id}`);
     } catch (error) {
+      // setError("Error message hain " + error.message);
       setError(error.message);
       setLoading(false);
     }

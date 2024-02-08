@@ -42,9 +42,11 @@ export const signin = async (req, res, next) => {
       return next(errorHandler(401, "Wrong Credentials"));
     }
 
-    const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET_KEY, {
-      expiresIn: "1m",
-    });
+    const token = jwt.sign(
+      { id: validUser._id },
+      process.env.JWT_SECRET_KEY,
+      
+    );
     const { password: pass, ...rest } = validUser._doc;
 
     res.cookie("access_token", token, { httpOnly: true }).json({
@@ -86,8 +88,7 @@ export const google = async (req, res, next) => {
         {
           id: newUser._id,
         },
-        process.env.JWT_SECRET_KEY,
-        { expiresIn: "1m" }
+        process.env.JWT_SECRET_KEY
       );
       const { password: pass, ...rest } = newUser._doc;
       res.cookie("access_token", token, { httpOnly: true }).status(200).json({
