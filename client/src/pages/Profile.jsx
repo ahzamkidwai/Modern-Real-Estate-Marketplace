@@ -30,18 +30,45 @@ function Profile() {
   const [fileUploadError, setFileUploadError] = useState(false);
   const [formData, setFormData] = useState({});
   const [updateSuccess, setUpdateSuccess] = useState(false);
+  const [showListingError, setShowListingError] = useState(false);
+  const [usersListings, setUsersListings] = useState([]);
   const dispatch = useDispatch();
 
-  console.log("File is inside (Profile.jsx) : ", file);
-  console.log("File Percentage uploaded is : ", filePercentage);
+  // console.log("File is inside (Profile.jsx) : ", file);
+  // console.log("File Percentage uploaded is : ", filePercentage);
   console.log("FormData is (inside Profile.jsx) : ", formData);
   console.log("currentUser is (inside Profile.jsx) : ", currentUser);
+  console.log("UserListings are : ", usersListings);
 
   useEffect(() => {
     if (file) {
       uploadFileHandler(file);
     }
   }, [file]);
+
+  async function showListingsHandler() {
+    console.log("showListingsHandler function call hua hain");
+    console.log("Current USER HAIn  : ", currentUser.rest);
+    try {
+      setShowListingError(false);
+      const response = await fetch(
+        `/api/user/listings/${currentUser.rest._id}`,
+        {
+          method: "GET",
+        }
+      );
+      const responseData = await response.json();
+      console.log("showListingsHandler mei responseData hain : ", responseData);
+      if (responseData.success === false) {
+        setShowListingError(true);
+        return;
+      }
+      setUsersListings(responseData.listings);
+      console.log("UsersLISTINGS : ", usersListings);
+    } catch (error) {
+      setShowListingError(true);
+    }
+  }
 
   function uploadFileHandler(file) {
     const storage = getStorage(app);
@@ -223,6 +250,47 @@ function Profile() {
       <p className="text-green-700 font-semibold mt-5 text-center">
         {updateSuccess ? "User updated Successfully." : ""}
       </p>
+      <div
+        onClick={showListingsHandler}
+        className="text-green-700 w-full text-center"
+      >
+        Show Listings
+        <p className="text-red-700 mt-5">
+          {showListingError ? showListingError : ""}
+        </p>
+        {usersListings && usersListings.length > 0 && (
+          <div className="flex flex-col gap-4">
+            <h1 className="text-center mt-7 text-2xl font-semibold">
+              Your Listings
+            </h1>
+            {usersListings.map((listing) => (
+              <div
+                key={listing._id}
+                className="border rounded-lg p-3 flex justify-between items-center gap-4"
+              >
+                <Link to={`/listing/${listing._id}`}>
+                  <img
+                    src={listing.imageUrls[0]}
+                    alt="listing cover"
+                    className="h-16 w-16 object-contain"
+                  />
+                </Link>
+                <Link
+                  className="text-slate-700 font-semibold  hover:underline truncate flex-1"
+                  to={`/listing/${listing._id}`}
+                >
+                  <p>{listing.name}</p>
+                </Link>
+
+                <div className="flex flex-col item-center">
+                  <button className="text-red-700 uppercase">Delete</button>
+                  <button className="text-green-700 uppercase">Edit</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
