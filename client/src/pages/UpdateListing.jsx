@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   getDownloadURL,
   getStorage,
@@ -7,12 +7,12 @@ import {
 } from "firebase/storage";
 import { app } from "../firebase";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-
-function CreateListing() {
-  const { currentUser } = useSelector((state) => state.user);
+function UpdateListing() {
   const navigate = useNavigate();
+  const params = useParams();
+  const { currentUser } = useSelector((state) => state.user);
   const [files, setFiles] = useState([]);
   const [formData, setFormData] = useState({
     imageUrls: [],
@@ -33,8 +33,31 @@ function CreateListing() {
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  console.log("Files inside CreateListing.jsx : ", files);
-  console.log("formData inside CreateListing.jsx : ", formData);
+  //   console.log("Files inside CreateListing.jsx : ", files);
+  //   console.log("formData inside CreateListing.jsx : ", formData);
+
+  useEffect(() => {
+    const fetchListing = async () => {
+      const listingID = params.listingId;
+      console.log(
+        "Listing id inside fetchlisting handler inside UpdateListing.jsx",
+        listingID
+      );
+      const response = await fetch(`/api/listing/get/${listingID}`);
+      const responseData = await response.json();
+      console.log(
+        "Response Data inside useEffect fetchListing handler : ",
+        responseData
+      );
+      if (responseData.success === false) {
+        console.log("responseData.success === false ", error.message);
+        setError(error.message);
+        return;
+      }
+      setFormData(responseData.listing);
+    };
+    fetchListing();
+  }, []);
 
   function imageSubmitHandler(event) {
     // event.preventDefault();
@@ -158,7 +181,7 @@ function CreateListing() {
         return setError("Discount Price must be lesser than Regular Price");
       setLoading(true);
       setError(false);
-      const response = await fetch("/api/listing/create", {
+      const response = await fetch(`/api/listing/update/${params.listingId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -192,7 +215,7 @@ function CreateListing() {
   return (
     <div className="p-3 mx-auto max-w-4xl">
       <h1 className="text-3xl font-semibold text-center my-7">
-        Create a Listing
+        Update a Listing
       </h1>
       <form
         className="flex flex-col sm:flex-row gap-4"
@@ -410,7 +433,7 @@ function CreateListing() {
             disabled={loading || uploading}
             className="p-3 bg-slate-700 text-white uppercase rounded-lg hover:opacity-95 disabled:opacity-80"
           >
-            {loading ? "Creating..." : "Create Listing"}
+            {loading ? "Updating..." : "Update Listing"}
           </button>
           <p className="text-red-700 text-sm ">{error ? error : ""}</p>
         </div>
@@ -419,4 +442,4 @@ function CreateListing() {
   );
 }
 
-export default CreateListing;
+export default UpdateListing;
