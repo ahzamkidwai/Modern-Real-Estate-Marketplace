@@ -33,9 +33,6 @@ function UpdateListing() {
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  //   console.log("Files inside CreateListing.jsx : ", files);
-  //   console.log("formData inside CreateListing.jsx : ", formData);
-
   useEffect(() => {
     const fetchListing = async () => {
       const listingID = params.listingId;
@@ -60,8 +57,6 @@ function UpdateListing() {
   }, []);
 
   function imageSubmitHandler(event) {
-    // event.preventDefault();
-
     if (files.length > 0 && files.length < 7) {
       setUploading(true);
       setImageUploadError(false);
@@ -81,10 +76,6 @@ function UpdateListing() {
           setUploading(false);
         })
         .catch((err) => {
-          /* console.log(
-            "Image upload error (inside imageSubmitHandler) : ",
-            err.message
-          ); */
           setImageUploadError("Image upload failed. (Max 2 MB per image)");
           setUploading(false);
         });
@@ -92,12 +83,9 @@ function UpdateListing() {
       setImageUploadError("You can only upload 6 images ");
       setUploading(false);
     }
-    // console.log("imageSubmitHandler function completed successfully : ");
   }
 
   async function storeImageFunction(file) {
-    // console.log("Welcome to storeImageFunction handler");
-
     return new Promise((resolve, reject) => {
       const storage = getStorage(app);
       const fileName = new Date().getTime() + file.name;
@@ -119,10 +107,6 @@ function UpdateListing() {
         },
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            /* console.log(
-              "Image successfully uploaded (We are inside storeImageFunction function ) :",
-              downloadURL
-            ); */
             resolve(downloadURL);
           });
         }
@@ -132,7 +116,6 @@ function UpdateListing() {
   }
 
   function deleteImageHandler(index) {
-    // console.log("dlete image function is called");
     setFormData({
       ...formData,
       imageUrls: formData.imageUrls.filter((_, i) => i !== index),
@@ -172,7 +155,7 @@ function UpdateListing() {
 
   async function submitHandler(event) {
     event.preventDefault();
-    // console.log("submitHandler function is called");
+    
     try {
       console.log("We are inside submitHandler function try block");
       if (formData.imageUrls.length < 1)
@@ -191,22 +174,14 @@ function UpdateListing() {
           userRef: currentUser.rest._id,
         }),
       });
-      // console.log("Current User hain : ", currentUser.rest);
       console.log("Response is : ", response);
       const responseData = await response.json();
       setLoading(false);
-      /* console.log(
-        "ResponseData inside (createListing.jsx for submitHandler) is : ",
-        responseData
-      ); */
       if (responseData.success === false) {
-        // console.log("responseData.success === false hain");
-        // setError("responseData.success === false hain " + responseData.message);
         setError(responseData.message);
       }
       navigate(`/listing/${currentUser.rest._id}`);
     } catch (error) {
-      // setError("Error message hain " + error.message);
       setError(error.message);
       setLoading(false);
     }
