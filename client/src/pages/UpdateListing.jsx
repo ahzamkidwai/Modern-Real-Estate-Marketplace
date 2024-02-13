@@ -155,7 +155,6 @@ function UpdateListing() {
 
   async function submitHandler(event) {
     event.preventDefault();
-    
     try {
       console.log("We are inside submitHandler function try block");
       if (formData.imageUrls.length < 1)
