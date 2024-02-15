@@ -5,7 +5,7 @@ export default function Contact({ listing }) {
   const [landlord, setLandlord] = useState(null);
   const [message, setMessage] = useState("");
   const onChange = (e) => {
-    console.log("Message is (inside Contact.jsx) is : ", message)
+    console.log("Message is (inside Contact.jsx) is : ", message);
     setMessage(e.target.value);
   };
 
@@ -29,8 +29,8 @@ export default function Contact({ listing }) {
       {landlord && (
         <div className="flex flex-col gap-2">
           <p>
-            Contact <span className="font-semibold">{landlord.username}</span>{" "}
-            for{" "}
+            Contact <span className="font-semibold">{landlord.username}</span>
+            for
             <span className="font-semibold">{listing.name.toUpperCase()}</span>
           </p>
           <textarea
