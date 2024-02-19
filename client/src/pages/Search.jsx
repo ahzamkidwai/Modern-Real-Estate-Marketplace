@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ListingItem from "../components/ListingItem";
 
 export default function Search() {
   const navigate = useNavigate();
@@ -15,9 +16,10 @@ export default function Search() {
 
   const [loading, setLoading] = useState(false);
   const [listings, setListings] = useState([]);
+  const [listingsData, setListingsData] = useState([]);
   const [showMore, setShowMore] = useState(false);
-  console.log("lisitngs are (inside Search.jsx) is : ", listings)
-
+  console.log("lisitngs are (inside Search.jsx) is : ", listingsData);
+  // setListingsData(listings.listings);
   console.log("SideBarData is : ", sideBarData);
 
   useEffect(() => {
@@ -61,7 +63,9 @@ export default function Search() {
       } else {
         setShowMore(false);
       }
+      console.log("Data is inside Search handler is : ", data);
       setListings(data);
+      setListingsData(data.listings);
       setLoading(false);
     };
 
@@ -232,8 +236,26 @@ export default function Search() {
           </button>
         </form>
       </div>
-      <div className="text-3xl font-semibold border-b p-3 text-slate-700 mt-5 text-center uppercase">
+      <div className="text-3xl font-semibold border-b p-3 text-slate-700 mt-5 text-center ">
         <h1>Listing Results</h1>
+        <div className="p-7 flex flex-wrap gap-4">
+          {!loading && listingsData.length === 0 && (
+            <p className="text-xl text-center text-slate-700">
+              No Listing Found
+            </p>
+          )}
+          {loading && (
+            <p className="text-xl text-slate-700 text-center w-full">
+              Loading...
+            </p>
+          )}
+
+          {!loading &&
+            listingsData &&
+            listingsData.map((listing) => (
+              <ListingItem key={listing._id} listing={listing} />
+            ))}
+        </div>
       </div>
     </div>
   );
