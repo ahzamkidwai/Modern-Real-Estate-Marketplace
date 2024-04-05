@@ -15,10 +15,12 @@ Welcome to the Modern Real Estate Marketplace project! This repository contains 
 
 ## Technologies Used
 
-- **Frontend:** React.js, Redux, React Router, Axios, CSS/SCSS
+- **Frontend:** React.js, React-Redux, React Router, Tailwind CSS
 - **Backend:** Node.js, Express.js, MongoDB, Mongoose
-- **Authentication:** JWT (JSON Web Tokens)
-- **Maps Integration:** Google Maps API
+- **Authentication:** JWT (JSON Web Tokens), OAuth Authentication
+- **File Upload:** Firebase
+
+
 
 ## Installation
 
